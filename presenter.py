@@ -59,10 +59,10 @@ class TimesheetHandler:
             return Timesheet(timesheet["timesheet_id"], timesheet["user_id"], timesheet["department"], worked_hours, timesheet["status"])
         return None
 
-    def get_timesheets(self, department, status):
+    def get_timesheets_by_status(self, department, status):
         data =  ["*"]
         table_name = "timesheets"
-        conditions = [f"department = {department}", f"status = '{status}'"]
+        conditions = [f"department = '{department}'", f"status = '{status}'"]
 
         result = self.db_handler.get_data(data, table_name, conditions)
 

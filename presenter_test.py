@@ -17,20 +17,31 @@ class TestUserHandler(unittest.TestCase):
             os.remove(self.db_path)
 
     def test_create_user(self):
-        user_id = self.user_handler.create_user("Colin Baker", "six@example.com", "password123", "IT", "User")
+        user_id = self.user_handler.create_user("Christopher Eccleston", "nine@example.com", "password123", "IT", "User")
         self.assertIsNotNone(user_id)
 
     def test_get_user_by_id(self):
-        user_id = self.user_handler.create_user("Sylvester McCoy", "seven@example.com", "pass456", "HR", "Manager")
+        user_id = self.user_handler.create_user("David Tennant", "ten@example.com", "pass456", "HR", "Manager")
         user = self.user_handler.get_user_by_id(user_id)
         self.assertIsNotNone(user)
-        self.assertEqual(user.name, "Sylvester McCoy")
+        self.assertEqual(user.name, "David Tennant")
 
     def test_authenticate_user(self):
-        self.user_handler.create_user("Paul McGann", "eight@example.com", "secure789", "Finance", "User")
-        authenticated_user = self.user_handler.authenticate_user("eight@example.com", "secure789")
+        self.user_handler.create_user("Matt Smith", "eleven@example.com", "secure789", "Finance", "User")
+        authenticated_user = self.user_handler.authenticate_user("eleven@example.com", "secure789")
         self.assertIsNotNone(authenticated_user)
-        self.assertEqual(authenticated_user.name, "Paul McGann")
+        self.assertEqual(authenticated_user.name, "Matt Smith")
+
+    def test_get_user_by_id_not_found(self):
+        user_id = 9999 
+        user = self.user_handler.get_user_by_id(user_id)
+        self.assertIsNone(user)
+
+    def test_authenticate_user_not_found(self):
+        email = "nonexistent@example.com" 
+        password = "nonexistent_password"
+        user = self.user_handler.authenticate_user(email, password)
+        self.assertIsNone(user)
 
 class TestTimesheetHandler(unittest.TestCase):
     def setUp(self):
@@ -56,27 +67,67 @@ class TestTimesheetHandler(unittest.TestCase):
         self.assertIsNotNone(timesheet)
         self.assertEqual(timesheet.department, "HR")
 
+    def test_get_timesheets_by_status(self):
+        user_id_1 = self.user_handler.create_user("Jon Pertwee", "three@example.com", "secure789", "IT", "User")
+        self.timesheet_handler.create_timesheet(user_id_1, "IT", "Pending")
+
+        user_id_2 = self.user_handler.create_user("Tom Baker", "four@example.com", "pass789", "HR", "User")
+        self.timesheet_handler.create_timesheet(user_id_2, "HR", "Approved")
+
+        user_id_3 = self.user_handler.create_user("Peter Davison", "five@example.com", "pass123", "Finance", "User")
+        self.timesheet_handler.create_timesheet(user_id_3, "Finance", "Pending")
+
+        timesheets_pending_it = self.timesheet_handler.get_timesheets_by_status("IT", "Pending")
+        timesheets_approved_hr = self.timesheet_handler.get_timesheets_by_status("HR", "Approved")
+        timesheets_pending_finance = self.timesheet_handler.get_timesheets_by_status("Finance", "Pending")
+
+        self.assertEqual(len(timesheets_pending_it), 1)
+        self.assertEqual(len(timesheets_approved_hr), 1)
+        self.assertEqual(len(timesheets_pending_finance), 1)
+
+        self.assertEqual(timesheets_pending_it[0].department, "IT")
+        self.assertEqual(timesheets_approved_hr[0].status, "Approved")
+        self.assertEqual(timesheets_pending_finance[0].employee_id, user_id_3)
+
     def test_set_timesheet_status(self):
-        user_id = self.user_handler.create_user("Jon Pertwee", "three@example.com", "secure789", "Finance", "User")
+        user_id = self.user_handler.create_user("Sylvester McCoy", "six@example.com", "pass234", "IT", "User")
         timesheet_id = self.timesheet_handler.create_timesheet(user_id, "Finance", "Pending")
         self.timesheet_handler.set_timesheet_status(timesheet_id, "Approved")
         timesheet = self.timesheet_handler.get_timesheet_by_id(timesheet_id)
         self.assertEqual(timesheet.status, "Approved")
 
     def test_create_timesheet_entry(self):
-        user_id = self.user_handler.create_user("Tom Baker", "four@example.com", "pass789", "Sales", "User")
+        user_id = self.user_handler.create_user("Colin Baker", "seven@example.com", "pass567", "HR", "Manager")
         timesheet_id = self.timesheet_handler.create_timesheet(user_id, "Sales", "Pending")
         self.timesheet_handler.create_timesheet_entry(timesheet_id, "2023-01-01", 8.5)
         entries = self.timesheet_handler.get_entries_by_timesheet_id(timesheet_id)
         self.assertEqual(len(entries), 1)
 
     def test_get_flexi_balance(self):
-        user_id = self.user_handler.create_user("Peter Davison", "five@example.com", "pass123", "Marketing", "User")
+        user_id = self.user_handler.create_user("Paul McGann", "eight@example.com", "pass890", "Finance", "User")
         timesheet_id = self.timesheet_handler.create_timesheet(user_id, "Marketing", "Approved")
         self.timesheet_handler.create_timesheet_entry(timesheet_id, "2023-01-01", 5.5)
         self.timesheet_handler.create_timesheet_entry(timesheet_id, "2023-01-02", 14.5)
         balance = self.timesheet_handler.get_flexi_balance(user_id, daily_expected_hours=10)
         self.assertEqual(balance, 0)
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_get_timesheets_by_status_not_found(self):
+        department = "NonexistentDepartment"
+        status = "NonexistentStatus"
+        timesheets = self.timesheet_handler.get_timesheets_by_status(department, status)
+        self.assertIsNone(timesheets)
+
+    def test_get_timesheet_by_id_not_found(self):
+        timesheet_id = 9999  
+        timesheets = self.timesheet_handler.get_timesheet_by_id(timesheet_id)
+        self.assertIsNone(timesheets)
+        
+    def test_get_entries_by_timesheet_id_not_found(self):
+        timesheet_id = 9999  
+        entries = self.timesheet_handler.get_entries_by_timesheet_id(timesheet_id)
+        self.assertEqual(entries, {})
+
+    def test_get_flexi_balance_no_entries(self):
+        user_id = 9999  
+        balance = self.timesheet_handler.get_flexi_balance(user_id, daily_expected_hours=8)
+        self.assertEqual(balance, 0)

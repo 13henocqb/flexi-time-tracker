@@ -132,7 +132,7 @@ class FlexiTimeGUI:
         return 
     
     def view_all_timesheets_page(self):
-        timesheets = self.timesheet_handler.get_timesheets(self.user.department, "Pending")
+        timesheets = self.timesheet_handler.get_timesheets_by_status(self.user.department, "Pending")
         data = []
 
         if timesheets:
@@ -160,7 +160,7 @@ class FlexiTimeGUI:
 
                     self.approve_timesheet_page(timesheets[selected_row])
 
-                    timesheets = self.timesheet_handler.get_timesheets(self.user.department, "Pending")
+                    timesheets = self.timesheet_handler.get_timesheets_by_status(self.user.department, "Pending")
                     data = []
 
                     if timesheets:

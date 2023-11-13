@@ -12,8 +12,9 @@ class DatabaseHandler:
         try:
             self.conn = sqlite3.connect(self.db_path)
             self.cursor = self.conn.cursor()
-        except sqlite3.Error as e:
+        except sqlite3.Error  as e:
             print(f"Error connecting to the database: {e}")
+            raise e
 
     def create_table(self, table_name, columns):
         try:
@@ -21,6 +22,7 @@ class DatabaseHandler:
             self.cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} ({columns_string})")
         except sqlite3.Error as e:
             print(f"Error creating the table: {e}")
+            raise e
 
     def update_data(self, table_name, data, condition):
         try:
@@ -31,6 +33,7 @@ class DatabaseHandler:
             self.conn.commit()
         except sqlite3.Error as e:
             print(f"Error updating data: {e}")
+            raise e
 
     def insert_data(self, table_name, data):
         try:
@@ -44,6 +47,7 @@ class DatabaseHandler:
             return inserted_id
         except sqlite3.Error as e:
             print(f"Error inserting data: {e}")
+            raise e
 
     def get_data(self, data, table_name, conditions = None, joins = None):
         query =  f"SELECT {', '.join(data)} FROM {table_name} "
@@ -72,6 +76,7 @@ class DatabaseHandler:
 
         except sqlite3.Error as e:
             print(f"Error querying data: {e}")
+            raise e
 
     def delete_row(self, table_name, condition):
         try:
@@ -80,6 +85,7 @@ class DatabaseHandler:
             self.conn.commit()
         except sqlite3.Error as e:
             print(f"Error deleting row: {e}")
+            raise e
 
     def delete_table(self, table_name):
         try:
@@ -88,6 +94,7 @@ class DatabaseHandler:
             self.conn.commit()
         except sqlite3.Error as e:
             print(f"Error deleting table: {e}")
+            raise e
 
     def close(self):
         if self.conn:
