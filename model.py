@@ -9,12 +9,8 @@ class DatabaseHandler:
         self.connect()
 
     def connect(self):
-        try:
-            self.conn = sqlite3.connect(self.db_path)
-            self.cursor = self.conn.cursor()
-        except sqlite3.Error  as e:
-            print(f"Error connecting to the database: {e}")
-            raise e
+        self.conn = sqlite3.connect(self.db_path)
+        self.cursor = self.conn.cursor()
 
     def create_table(self, table_name, columns):
         try:
