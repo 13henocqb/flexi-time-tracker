@@ -109,9 +109,9 @@ class TestTimesheetHandler(unittest.TestCase):
         user_id = self.user_handler.create_user("Paul McGann", "eight@example.com", "pass890", "Finance", "User")
         timesheet_id = self.timesheet_handler.create_timesheet(user_id, "Marketing", "Approved")
         self.timesheet_handler.create_timesheet_entry(timesheet_id, "2023-01-01", 5.5)
-        self.timesheet_handler.create_timesheet_entry(timesheet_id, "2023-01-02", 14.5)
+        self.timesheet_handler.create_timesheet_entry(timesheet_id, "2023-01-02", 15.5)
         balance = self.timesheet_handler.get_flexi_balance(user_id, daily_expected_hours=10)
-        self.assertEqual(balance, 0)
+        self.assertEqual(balance, 1)
 
     def test_get_timesheets_by_status_not_found(self):
         department = "NonexistentDepartment"
