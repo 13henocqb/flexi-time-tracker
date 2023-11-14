@@ -31,7 +31,7 @@ Before using the Flexi-Time App, make sure you have the following installed:
 3. Open the terminal and navigate to the directory where the app's source code is located.
 4. Run the app by executing the following command:
    ```
-   python view.py
+   python main.py
    ```
 
 ## How to Use
