@@ -32,15 +32,14 @@ class TestUserHandler(unittest.TestCase):
         self.assertIsNotNone(authenticated_user)
         self.assertEqual(authenticated_user.name, "Matt Smith")
 
+    def test_authenticate_user_invalid_password(self):
+        self.user_handler.create_user("Peter Capaldi", "twelve@example.com", "valid_password", "IT", "User")
+        user = self.user_handler.authenticate_user("twelve@example.com", "invalid_password")
+        self.assertIsNone(user)
+
     def test_get_user_by_id_not_found(self):
         user_id = 9999 
         user = self.user_handler.get_user_by_id(user_id)
-        self.assertIsNone(user)
-
-    def test_authenticate_user_not_found(self):
-        email = "nonexistent@example.com" 
-        password = "nonexistent_password"
-        user = self.user_handler.authenticate_user(email, password)
         self.assertIsNone(user)
 
 class TestTimesheetHandler(unittest.TestCase):
