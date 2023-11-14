@@ -1,18 +1,21 @@
 import unittest
 import sqlite3
+import tempfile
+import shutil
 import os
 
 from model import DatabaseHandler
 
 class TestDatabaseHandler(unittest.TestCase):
     def setUp(self):
-        self.db_path = "test_db.sqlite"
+        self.temp_folder = tempfile.mkdtemp()
+        self.db_path = self.temp_folder + "test_db.sqlite"
         self.db_handler = DatabaseHandler(self.db_path)
 
     def tearDown(self):
         self.db_handler.close()
-        if os.path.exists(self.db_path):
-            os.remove(self.db_path)
+        if os.path.exists(self.temp_folder):
+            shutil.rmtree(self.temp_folder)
 
     def test_create_table(self):
         table_name = "test_table"

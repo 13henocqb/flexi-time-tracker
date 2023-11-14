@@ -1,19 +1,22 @@
 import unittest
+import tempfile
 import os
 
 from presenter import UserHandler, TimesheetHandler
 from model import DatabaseHandler
+import shutil
 
 class TestUserHandler(unittest.TestCase):
     def setUp(self):
-        self.db_path = "test_db.sqlite"
+        self.temp_folder = tempfile.mkdtemp()
+        self.db_path = self.temp_folder + "test_db.sqlite"
         self.db_handler = DatabaseHandler(self.db_path)
         self.user_handler = UserHandler(self.db_handler)
 
     def tearDown(self):
         self.db_handler.close()
-        if os.path.exists(self.db_path):
-            os.remove(self.db_path)
+        if os.path.exists(self.temp_folder):
+            shutil.rmtree(self.temp_folder)
 
     def test_create_user(self):
         user_id = self.user_handler.create_user("Christopher Eccleston", "nine@example.com", "password123", "IT", "User")
@@ -43,15 +46,16 @@ class TestUserHandler(unittest.TestCase):
 
 class TestTimesheetHandler(unittest.TestCase):
     def setUp(self):
-        self.db_path = "test_db.sqlite"
+        self.temp_folder = tempfile.mkdtemp()
+        self.db_path = self.temp_folder + "test_db.sqlite"
         self.db_handler = DatabaseHandler(self.db_path)
         self.user_handler = UserHandler(self.db_handler)
         self.timesheet_handler = TimesheetHandler(self.db_handler)
 
     def tearDown(self):
         self.db_handler.close()
-        if os.path.exists(self.db_path):
-            os.remove(self.db_path)
+        if os.path.exists(self.temp_folder):
+            shutil.rmtree(self.temp_folder)
 
     def test_create_timesheet(self):
         user_id = self.user_handler.create_user("William Hartnell", "one@example.com", "password123", "IT", "User")
