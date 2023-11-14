@@ -6,7 +6,7 @@ from model import DatabaseHandler
 
 class TestUserHandler(unittest.TestCase):
     def setUp(self):
-        self.db_path = 'test_db.sqlite'
+        self.db_path = "test_db.sqlite"
         self.db_handler = DatabaseHandler(self.db_path)
         self.user_handler = UserHandler(self.db_handler)
 
@@ -43,7 +43,7 @@ class TestUserHandler(unittest.TestCase):
 
 class TestTimesheetHandler(unittest.TestCase):
     def setUp(self):
-        self.db_path = 'test_db.sqlite'
+        self.db_path = "test_db.sqlite"
         self.db_handler = DatabaseHandler(self.db_path)
         self.user_handler = UserHandler(self.db_handler)
         self.timesheet_handler = TimesheetHandler(self.db_handler)
