@@ -1,10 +1,10 @@
 import unittest
 import tempfile
 import os
+import shutil
 
 from presenter import UserHandler, TimesheetHandler
 from model import DatabaseHandler
-import shutil
 
 class TestUserHandler(unittest.TestCase):
     def setUp(self):
