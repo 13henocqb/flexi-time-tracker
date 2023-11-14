@@ -38,7 +38,6 @@ class DatabaseHandler:
             self.cursor.execute(query, data)
             self.conn.commit()
 
-            # Get the ID of the inserted row
             inserted_id = self.cursor.lastrowid
             return inserted_id
         except sqlite3.Error as e:
