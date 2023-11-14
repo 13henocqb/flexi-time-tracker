@@ -9,7 +9,7 @@
 		<package name="src" line-rate="1" branch-rate="0" complexity="0">
 			<classes>
 				<class name="model.py" filename="src/model.py" complexity="0" line-rate="1" branch-rate="0">
-					<methods/>
+					<methods/> 
 					<lines>
 						<line number="1" hits="1"/>
 						<line number="3" hits="1"/>
