@@ -9,7 +9,7 @@ from model import DatabaseHandler
 class TestUserHandler(unittest.TestCase):
     def setUp(self):
         self.temp_folder = tempfile.mkdtemp()
-        db_path = self.temp_folder + "test_db.sqlite"
+        db_path = os.path.join(self.temp_folder, "test_db.sqlite")
         self.db_handler = DatabaseHandler(db_path)
         self.user_handler = UserHandler(self.db_handler)
 
@@ -47,7 +47,7 @@ class TestUserHandler(unittest.TestCase):
 class TestTimesheetHandler(unittest.TestCase):
     def setUp(self):
         self.temp_folder = tempfile.mkdtemp()
-        db_path = self.temp_folder + "test_db.sqlite"
+        db_path = os.path.join(self.temp_folder, "test_db.sqlite")
         self.db_handler = DatabaseHandler(db_path)
         self.user_handler = UserHandler(self.db_handler)
         self.timesheet_handler = TimesheetHandler(self.db_handler)
