@@ -89,14 +89,14 @@ class TestTimesheetHandler(unittest.TestCase):
         self.assertEqual(timesheets_pending_finance[0].employee_id, user_id_3)
 
     def test_set_timesheet_status(self):
-        user_id = self.user_handler.create_user("Sylvester McCoy", "six@example.com", "pass234", "IT", "User")
+        user_id = self.user_handler.create_user("Colin Baker", "six@example.com", "pass234", "IT", "User")
         timesheet_id = self.timesheet_handler.create_timesheet(user_id, "Finance", "Pending")
         self.timesheet_handler.set_timesheet_status(timesheet_id, "Approved")
         timesheet = self.timesheet_handler.get_timesheet_by_id(timesheet_id)
         self.assertEqual(timesheet.status, "Approved")
 
     def test_create_timesheet_entry(self):
-        user_id = self.user_handler.create_user("Colin Baker", "seven@example.com", "pass567", "HR", "Manager")
+        user_id = self.user_handler.create_user("Sylvester McCoy", "seven@example.com", "pass567", "HR", "Manager")
         timesheet_id = self.timesheet_handler.create_timesheet(user_id, "Sales", "Pending")
         self.timesheet_handler.create_timesheet_entry(timesheet_id, "2023-01-01", 8.5)
         entries = self.timesheet_handler.get_entries_by_timesheet_id(timesheet_id)
