@@ -19,8 +19,8 @@ class TestDatabaseHandler(unittest.TestCase):
 
     def test_create_table(self):
         table_name = "test_table"
-        columns = {"id":"INTEGER PRIMARY KEY", "first_name":"TEXT", "last_name":"TEXT"}
-        self.db_handler.create_table(table_name, columns)
+        attributes = {"id":"INTEGER PRIMARY KEY", "first_name":"TEXT", "last_name":"TEXT"}
+        self.db_handler.create_table(table_name, attributes)
         
         tables = self.db_handler.query_data("SELECT name FROM sqlite_master WHERE type='table'")
         table_names = [table["name"] for table in tables]
@@ -28,8 +28,8 @@ class TestDatabaseHandler(unittest.TestCase):
 
     def test_insert_and_get_data(self):
         table_name = "test_table"
-        columns = {"id":"INTEGER PRIMARY KEY", "first_name":"TEXT", "last_name":"TEXT"}
-        self.db_handler.create_table(table_name, columns)
+        attributes = {"id":"INTEGER PRIMARY KEY", "first_name":"TEXT", "last_name":"TEXT"}
+        self.db_handler.create_table(table_name, attributes)
         data = ("John", "Doe")
         self.db_handler.insert_data(table_name, data)
 
@@ -38,8 +38,8 @@ class TestDatabaseHandler(unittest.TestCase):
 
     def test_update_data(self):
         table_name = "test_table"
-        columns = {"id":"INTEGER PRIMARY KEY", "first_name":"TEXT", "last_name":"TEXT"}
-        self.db_handler.create_table(table_name, columns)
+        attributes = {"id":"INTEGER PRIMARY KEY", "first_name":"TEXT", "last_name":"TEXT"}
+        self.db_handler.create_table(table_name, attributes)
         data = ("John", "Doe")
         id = self.db_handler.insert_data(table_name, data)
 
@@ -49,8 +49,8 @@ class TestDatabaseHandler(unittest.TestCase):
             
     def test_delete_row(self):
         table_name = "test_table"
-        columns = {"id":"INTEGER PRIMARY KEY", "first_name":"TEXT", "last_name":"TEXT"}
-        self.db_handler.create_table(table_name, columns)
+        attributes = {"id":"INTEGER PRIMARY KEY", "first_name":"TEXT", "last_name":"TEXT"}
+        self.db_handler.create_table(table_name, attributes)
         data = ("John", "Doe")
         id = self.db_handler.insert_data(table_name, data)
 
@@ -60,8 +60,8 @@ class TestDatabaseHandler(unittest.TestCase):
 
     def test_delete_table(self):
         table_name = "test_table"
-        columns = {"id":"INTEGER PRIMARY KEY", "first_name":"TEXT", "last_name":"TEXT"}
-        self.db_handler.create_table(table_name, columns)
+        attributes = {"id":"INTEGER PRIMARY KEY", "first_name":"TEXT", "last_name":"TEXT"}
+        self.db_handler.create_table(table_name, attributes)
 
         self.db_handler.delete_table(table_name)
         tables = self.db_handler.query_data("SELECT name FROM sqlite_master WHERE type='table'")
@@ -70,8 +70,8 @@ class TestDatabaseHandler(unittest.TestCase):
         
     def test_update_data_error(self):
         table_name = "test_table"
-        columns = {"id": "INTEGER PRIMARY KEY", "first_name": "TEXT", "last_name": "TEXT"}
-        self.db_handler.create_table(table_name, columns)
+        attributes = {"id": "INTEGER PRIMARY KEY", "first_name": "TEXT", "last_name": "TEXT"}
+        self.db_handler.create_table(table_name, attributes)
         data = ("John", "Doe")
         id = self.db_handler.insert_data(table_name, data)
 
@@ -80,8 +80,8 @@ class TestDatabaseHandler(unittest.TestCase):
 
     def test_delete_row_error(self):
         table_name = "test_table"
-        columns = {"id": "INTEGER PRIMARY KEY", "first_name": "TEXT", "last_name": "TEXT"}
-        self.db_handler.create_table(table_name, columns)
+        attributes = {"id": "INTEGER PRIMARY KEY", "first_name": "TEXT", "last_name": "TEXT"}
+        self.db_handler.create_table(table_name, attributes)
         data = ("John", "Doe")
         id = self.db_handler.insert_data(table_name, data)
 
@@ -90,16 +90,16 @@ class TestDatabaseHandler(unittest.TestCase):
 
     def test_create_table_error(self):
         table_name = "test_table"
-        columns = {"id": "INTEGER PRIMARY KEY", "first_name": "TEXT", "last_name": "TEXT"}
-        self.db_handler.create_table(table_name, columns)
+        attributes = {"id": "INTEGER PRIMARY KEY", "first_name": "TEXT", "last_name": "TEXT"}
+        self.db_handler.create_table(table_name, attributes)
 
         with self.assertRaises(sqlite3.Error):
-            self.db_handler.create_table("", columns)
+            self.db_handler.create_table("", attributes)
 
     def test_insert_data_error(self):
         table_name = "test_table"
-        columns = {"id": "INTEGER PRIMARY KEY", "first_name": "TEXT", "last_name": "TEXT"}
-        self.db_handler.create_table(table_name, columns)
+        attributes = {"id": "INTEGER PRIMARY KEY", "first_name": "TEXT", "last_name": "TEXT"}
+        self.db_handler.create_table(table_name, attributes)
         data = ("John", "Doe")
 
         self.db_handler.insert_data(table_name, data)
@@ -117,8 +117,8 @@ class TestDatabaseHandler(unittest.TestCase):
 
     def test_delete_table_error(self):
         table_name = "test_table"
-        columns = {"id": "INTEGER PRIMARY KEY", "first_name": "TEXT", "last_name": "TEXT"}
-        self.db_handler.create_table(table_name, columns)
+        attributes = {"id": "INTEGER PRIMARY KEY", "first_name": "TEXT", "last_name": "TEXT"}
+        self.db_handler.create_table(table_name, attributes)
 
         with self.assertRaises(sqlite3.Error):
             self.db_handler.delete_table("")

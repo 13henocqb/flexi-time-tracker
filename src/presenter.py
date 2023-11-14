@@ -3,8 +3,8 @@ from structures import User, Timesheet
 class UserHandler:
     def __init__(self, db_handler):
         self.db_handler = db_handler
-        users_columns = {"user_id":"INTEGER PRIMARY KEY", "name":"TEXT", "email":"TEXT", "password":"TEXT", "department":"TEXT", "role":"TEXT"}
-        self.db_handler.create_table("users", users_columns)
+        users_attributes = {"user_id":"INTEGER PRIMARY KEY", "name":"TEXT", "email":"TEXT", "password":"TEXT", "department":"TEXT", "role":"TEXT"}
+        self.db_handler.create_table("users", users_attributes)
 
     def create_user(self, name, email, password, department, role):
         user_id = self.db_handler.insert_data("users", (name, email, password, department, role))
@@ -37,10 +37,10 @@ class UserHandler:
 class TimesheetHandler:
     def __init__(self, db_handler):
         self.db_handler = db_handler
-        timesheets_columns = {"timesheet_id":"INTEGER PRIMARY KEY", "user_id":"INTEGER", "department":"TEXT", "status":"TEXT"}
-        timesheet_entries_columns =  {"entry_id":"INTEGER PRIMARY KEY", "timesheet_id":"INTEGER", "date":"DATE", "hours_worked":"REAL"}
-        self.db_handler.create_table("timesheets", timesheets_columns)
-        self.db_handler.create_table("timesheet_entries", timesheet_entries_columns)
+        timesheets_attributes = {"timesheet_id":"INTEGER PRIMARY KEY", "user_id":"INTEGER", "department":"TEXT", "status":"TEXT"}
+        timesheet_entries_attributes =  {"entry_id":"INTEGER PRIMARY KEY", "timesheet_id":"INTEGER", "date":"DATE", "hours_worked":"REAL"}
+        self.db_handler.create_table("timesheets", timesheets_attributes)
+        self.db_handler.create_table("timesheet_entries", timesheet_entries_attributes)
 
     def create_timesheet(self, user_id, department, status):
         timesheet_id = self.db_handler.insert_data("timesheets", (user_id, department, status))

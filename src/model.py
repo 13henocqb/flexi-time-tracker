@@ -12,10 +12,10 @@ class DatabaseHandler:
         self.conn = sqlite3.connect(self.db_path)
         self.cursor = self.conn.cursor()
 
-    def create_table(self, table_name, columns):
+    def create_table(self, table_name, attributes):
         try:
-            columns_string =  ", ".join([f"{field} {type}" for field, type in columns.items()])
-            self.cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} ({columns_string})")
+            attributes_string =  ", ".join([f"{field} {type}" for field, type in attributes.items()])
+            self.cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} ({attributes_string})")
         except sqlite3.Error as e:
             print(f"Error creating the table: {e}")
             raise e
@@ -61,11 +61,11 @@ class DatabaseHandler:
         try:
             self.cursor.execute(query)
 
-            columns = [column[0] for column in self.cursor.description]
+            attributes = [column[0] for column in self.cursor.description]
             results = []
 
             for row in self.cursor.fetchall():
-                row_dict = dict(zip(columns, row))
+                row_dict = dict(zip(attributes, row))
                 results.append(row_dict)
 
             return results
