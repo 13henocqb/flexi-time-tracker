@@ -44,6 +44,27 @@ class TestUserHandler(unittest.TestCase):
         user = self.user_handler.get_user_by_id(user_id)
         self.assertIsNone(user)
 
+    def test_create_user_edge_cases(self):
+        user_id_empty_name = self.user_handler.create_user("", "empty_name@example.com", "password123", "IT", "User")
+        self.assertIsNotNone(user_id_empty_name)
+
+        user_id_max_length = self.user_handler.create_user("A" * 255, "max_length@example.com", "password123", "IT", "User")
+        self.assertIsNotNone(user_id_max_length)
+
+        user_id_duplicate_email = self.user_handler.create_user("Rowan Atkinson", "nine@example.com", "password123", "IT", "User")
+        user_id_duplicate_email2 = self.user_handler.create_user("Richard E Grant", "nine@example.com", "password123", "IT", "User")
+        self.assertNotEqual(user_id_duplicate_email, user_id_duplicate_email2)
+
+    def test_authenticate_user_edge_cases(self):
+        authenticated_user_empty = self.user_handler.authenticate_user("", "")
+        self.assertIsNone(authenticated_user_empty)
+
+        authenticated_user_invalid_email = self.user_handler.authenticate_user("invalidemail", "password123")
+        self.assertIsNone(authenticated_user_invalid_email)
+
+        authenticated_user_invalid_password = self.user_handler.authenticate_user("valid@example.com", "")
+        self.assertIsNone(authenticated_user_invalid_password)
+
 class TestTimesheetHandler(unittest.TestCase):
     def setUp(self):
         self.temp_folder = tempfile.mkdtemp()
@@ -133,3 +154,29 @@ class TestTimesheetHandler(unittest.TestCase):
         user_id = 9999  
         balance = self.timesheet_handler.get_flexi_balance(user_id, daily_expected_hours=8)
         self.assertEqual(balance, 0)
+
+    def test_get_timesheet_by_id_edge_cases(self):
+        timesheet_id = 9999
+        timesheet = self.timesheet_handler.get_timesheet_by_id(timesheet_id)
+        self.assertIsNone(timesheet)
+
+    def test_set_timesheet_status_edge_cases(self):
+        timesheet_id = 9999
+        self.timesheet_handler.set_timesheet_status(timesheet_id, "Approved")
+        timesheet = self.timesheet_handler.get_timesheet_by_id(timesheet_id)
+        self.assertIsNone(timesheet)
+
+    def test_create_timesheet_entry_edge_cases(self):
+        user_id = self.user_handler.create_user("John Hurt", "war@example.com", "password123", "IT", "User")
+        timesheet_id = self.timesheet_handler.create_timesheet(user_id, "IT", "Pending")
+        entry_date_min_max = "2023-01-01"
+        entry_hours_min_max = 24.0
+        self.timesheet_handler.create_timesheet_entry(timesheet_id, entry_date_min_max, entry_hours_min_max)
+        entries = self.timesheet_handler.get_entries_by_timesheet_id(timesheet_id)
+        self.assertEqual(len(entries), 1)
+
+    def test_get_timesheets_by_status_not_found_edge_cases(self):
+        department = "NonexistentDepartment"
+        status = "NonexistentStatus"
+        timesheets = self.timesheet_handler.get_timesheets_by_status(department, status)
+        self.assertIsNone(timesheets)
