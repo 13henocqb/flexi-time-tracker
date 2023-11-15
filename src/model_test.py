@@ -43,7 +43,7 @@ class TestDatabaseHandler(unittest.TestCase):
         data = ["John", "Doe"]
         id, error = self.db_handler.insert_data(table_name, data, verbose = True)
         self.assertIsNone(error)
-        self.db_handler.update_data(table_name, {"last_name": "Smith"}, id, verbose = True)
+        self.db_handler.update_data(table_name, {"last_name": "Smith"}, f"id = {id}", verbose = True)
         result, error = self.db_handler.get_data(["last_name"], table_name, [f"id == {id}"], verbose = True)
         self.assertIsNone(error)
         self.assertEqual(result, [{"last_name": "Smith"}])
