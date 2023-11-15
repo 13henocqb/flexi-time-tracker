@@ -2,20 +2,21 @@ from structures import User, Timesheet
 
 class UserHandler:
     def __init__(self, db_handler):
+        self.table_name = "users"
+        self.table_attributes = {"user_id":"INTEGER PRIMARY KEY", "name":"TEXT", "email":"TEXT", "password":"TEXT", "department":"TEXT", "role":"TEXT"}
+
         self.db_handler = db_handler
-        users_attributes = {"user_id":"INTEGER PRIMARY KEY", "name":"TEXT", "email":"TEXT", "password":"TEXT", "department":"TEXT", "role":"TEXT"}
-        self.db_handler.create_table("users", users_attributes)
+        self.db_handler.create_table(self.table_name, self.table_attributes)
 
     def create_user(self, name, email, password, department, role):
-        user_id = self.db_handler.insert_data("users", (name, email, password, department, role))
+        user_id, error = self.db_handler.insert_data(self.table_name, (name, email, password, department, role))
         return user_id
 
     def get_user_by_id(self, user_id):
         data =  ["*"]
-        table_name = "users"
         conditions = [f"user_id == {user_id}"]
 
-        result = self.db_handler.get_data(data, table_name, conditions)
+        result, error = self.db_handler.get_data(data, self.table_name, conditions)
         
         if result:
             user = result[0] # Return the first matching record
@@ -24,10 +25,9 @@ class UserHandler:
 
     def authenticate_user(self, email, password):
         data =  ["*"]
-        table_name = "users"
         conditions = [f"email = '{email}'", f"password = '{password}'"]
 
-        result = self.db_handler.get_data(data, table_name, conditions)
+        result, error = self.db_handler.get_data(data, self.table_name, conditions)
         
         if result:
             user = result[0] # Return the first matching record
@@ -36,22 +36,24 @@ class UserHandler:
 
 class TimesheetHandler:
     def __init__(self, db_handler):
+        self.timesheet_table_name = "timesheets"
+        self.timesheet_table_attributes = {"timesheet_id":"INTEGER PRIMARY KEY", "user_id":"INTEGER", "department":"TEXT", "status":"TEXT"}
+        self.timesheet_entry_table_name = "timesheet_entries"
+        self.timesheet_entry_table_attributes =  {"entry_id":"INTEGER PRIMARY KEY", "timesheet_id":"INTEGER", "date":"DATE", "hours_worked":"REAL"}
+        
         self.db_handler = db_handler
-        timesheets_attributes = {"timesheet_id":"INTEGER PRIMARY KEY", "user_id":"INTEGER", "department":"TEXT", "status":"TEXT"}
-        timesheet_entries_attributes =  {"entry_id":"INTEGER PRIMARY KEY", "timesheet_id":"INTEGER", "date":"DATE", "hours_worked":"REAL"}
-        self.db_handler.create_table("timesheets", timesheets_attributes)
-        self.db_handler.create_table("timesheet_entries", timesheet_entries_attributes)
+        self.db_handler.create_table(self.timesheet_table_name, self.timesheet_table_attributes)
+        self.db_handler.create_table(self.timesheet_entry_table_name, self.timesheet_entry_table_attributes)
 
     def create_timesheet(self, user_id, department, status):
-        timesheet_id = self.db_handler.insert_data("timesheets", (user_id, department, status))
+        timesheet_id, error = self.db_handler.insert_data(self.timesheet_table_name, (user_id, department, status))
         return timesheet_id
 
     def get_timesheet_by_id(self, timesheet_id):
         data =  ["*"]
-        table_name = "timesheets"
         conditions = [f"timesheet_id = {timesheet_id}"]
 
-        result = self.db_handler.get_data(data, table_name, conditions)
+        result, error = self.db_handler.get_data(data, self.timesheet_table_name, conditions)
 
         if result:
             timesheet = result[0]
@@ -61,10 +63,9 @@ class TimesheetHandler:
 
     def get_timesheets_by_status(self, department, status):
         data =  ["*"]
-        table_name = "timesheets"
         conditions = [f"department = '{department}'", f"status = '{status}'"]
 
-        result = self.db_handler.get_data(data, table_name, conditions)
+        result, error = self.db_handler.get_data(data, self.timesheet_table_name, conditions)
 
         if result:
             timesheets = []
@@ -79,27 +80,25 @@ class TimesheetHandler:
     def set_timesheet_status(self, timesheet_id, status):
         data = {"status": status}
         condition = f"timesheet_id = {timesheet_id}"
-        self.db_handler.update_data("timesheets", data, condition)
+        self.db_handler.update_data(self.timesheet_table_name, data, condition)
 
     def create_timesheet_entry(self, timesheet_id, date, hours_worked):
-        self.db_handler.insert_data("timesheet_entries", (timesheet_id, date, hours_worked)) 
+        self.db_handler.insert_data(self.timesheet_entry_table_name, (timesheet_id, date, hours_worked)) 
 
     def get_entries_by_timesheet_id(self, timesheet_id):
         data =  ["*"]
-        table_name = "timesheet_entries"
         conditions = [f"timesheet_id = {timesheet_id}"]
 
-        timesheet_entries = self.db_handler.get_data(data, table_name, conditions)
+        timesheet_entries, error = self.db_handler.get_data(data, self.timesheet_entry_table_name, conditions)
         
         return {timesheet_entry["date"]: timesheet_entry["hours_worked"] for timesheet_entry in timesheet_entries}
     
     def get_flexi_balance(self, user_id, daily_expected_hours = 7.4):
         data =  ["hours_worked"]
-        table_name = "timesheet_entries"
-        joins = {"timesheets":"timesheet_id"}
+        joins = {self.timesheet_table_name:"timesheet_id"}
         conditions = [f"user_id = {user_id}", "status != 'Denied'"]
         
-        timesheet_entries = self.db_handler.get_data(data, table_name, conditions, joins)
+        timesheet_entries, error = self.db_handler.get_data(data, self.timesheet_entry_table_name, conditions, joins)
 
         if timesheet_entries:
             total_worked_hours = sum(timesheet_entry['hours_worked'] for timesheet_entry in timesheet_entries)

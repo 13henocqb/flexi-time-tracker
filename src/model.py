@@ -39,10 +39,10 @@ class DatabaseHandler:
             self.conn.commit()
 
             inserted_id = self.cursor.lastrowid
-            return inserted_id
+            return inserted_id, None
         except sqlite3.Error as e:
             print(f"Error inserting data: {e}")
-            return e
+            return None, e
 
     def get_data(self, data, table_name, conditions = None, joins = None):
         query =  f"SELECT {', '.join(data)} FROM {table_name} "
@@ -67,11 +67,11 @@ class DatabaseHandler:
                 row_dict = dict(zip(attributes, row))
                 results.append(row_dict)
 
-            return results
+            return results, None
 
         except sqlite3.Error as e:
             print(f"Error querying data: {e}")
-            return e
+            return None, e
 
     def delete_row(self, table_name, condition):
         try:
