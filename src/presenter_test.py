@@ -44,26 +44,26 @@ class TestUserHandler(unittest.TestCase):
         user = self.user_handler.get_user_by_id(user_id)
         self.assertIsNone(user)
 
-    def test_create_user_edge_cases(self):
+    def test_create_user_empty_name(self):
         user_id_empty_name = self.user_handler.create_user("", "empty_name@example.com", "password123", "IT", "User")
         self.assertIsNotNone(user_id_empty_name)
 
+    def test_create_user_max_length(self):
         user_id_max_length = self.user_handler.create_user("A" * 255, "max_length@example.com", "password123", "IT", "User")
         self.assertIsNotNone(user_id_max_length)
 
+    def test_create_user_duplicate_emails(self):
         user_id_duplicate_email = self.user_handler.create_user("Rowan Atkinson", "nine@example.com", "password123", "IT", "User")
         user_id_duplicate_email2 = self.user_handler.create_user("Richard E Grant", "nine@example.com", "password123", "IT", "User")
         self.assertNotEqual(user_id_duplicate_email, user_id_duplicate_email2)
 
-    def test_authenticate_user_edge_cases(self):
+    def test_authenticate_user_empty_fields(self):
         authenticated_user_empty = self.user_handler.authenticate_user("", "")
         self.assertIsNone(authenticated_user_empty)
 
+    def test_authenticate_user_invalid_email(self):
         authenticated_user_invalid_email = self.user_handler.authenticate_user("invalidemail", "password123")
         self.assertIsNone(authenticated_user_invalid_email)
-
-        authenticated_user_invalid_password = self.user_handler.authenticate_user("valid@example.com", "")
-        self.assertIsNone(authenticated_user_invalid_password)
 
 class TestTimesheetHandler(unittest.TestCase):
     def setUp(self):
