@@ -16,6 +16,7 @@ class DatabaseHandler:
         try:
             attributes_string =  ", ".join([f"{field} {type}" for field, type in attributes.items()])
             self.cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} ({attributes_string})")
+            return None
         except sqlite3.Error as e:
             print(f"Error creating the table: {e}")
             return e
@@ -27,6 +28,7 @@ class DatabaseHandler:
 
             self.cursor.execute(query, list(data.values()))
             self.conn.commit()
+            return None
         except sqlite3.Error as e:
             print(f"Error updating data: {e}")
             return e
@@ -78,6 +80,7 @@ class DatabaseHandler:
             query = f"DELETE FROM {table_name} WHERE {condition}"
             self.cursor.execute(query)
             self.conn.commit()
+            return None
         except sqlite3.Error as e:
             print(f"Error deleting row: {e}")
             return e
@@ -87,6 +90,7 @@ class DatabaseHandler:
             query = f"DROP TABLE IF EXISTS {table_name}"
             self.cursor.execute(query)
             self.conn.commit()
+            return None
         except sqlite3.Error as e:
             print(f"Error deleting table: {e}")
             return e
