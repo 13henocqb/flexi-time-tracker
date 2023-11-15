@@ -128,7 +128,7 @@ class TestTimesheetHandler(unittest.TestCase):
 
     def test_get_flexi_balance_with_entries_success(self):
         user_id = self.user_handler.create_user("Paul McGann", "eight@example.com", "pass890", "Finance", "User", verbose = True)
-        timesheet_id = self.timesheet_handler.create_timesheet(user_id, "Marketing", "Approved", verbose = True)
+        timesheet_id = self.timesheet_handler.create_timesheet(user_id, "Finance", "Approved", verbose = True)
         self.timesheet_handler.create_timesheet_entry(timesheet_id, "2023-01-01", 5.5, verbose = True)
         self.timesheet_handler.create_timesheet_entry(timesheet_id, "2023-01-02", 15.5, verbose = True)
         balance = self.timesheet_handler.get_flexi_balance(user_id, daily_expected_hours=10, verbose = True)
