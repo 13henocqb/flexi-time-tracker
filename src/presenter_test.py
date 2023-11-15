@@ -45,17 +45,17 @@ class TestUserHandler(unittest.TestCase):
         self.assertIsNone(user)
 
     def test_create_user_empty_name(self):
-        user_id_empty_name = self.user_handler.create_user("", "empty_name@example.com", "password123", "IT", "User")
-        self.assertIsNotNone(user_id_empty_name)
+        user_id = self.user_handler.create_user("", "empty_name@example.com", "password123", "IT", "User")
+        self.assertIsNotNone(user_id)
 
     def test_create_user_max_length(self):
-        user_id_max_length = self.user_handler.create_user("A" * 255, "max_length@example.com", "password123", "IT", "User")
-        self.assertIsNotNone(user_id_max_length)
+        user_id = self.user_handler.create_user("A" * 255, "max_length@example.com", "password123", "IT", "User")
+        self.assertIsNotNone(user_id)
 
     def test_create_user_duplicate_emails(self):
-        user_id_duplicate_email = self.user_handler.create_user("Rowan Atkinson", "nine@example.com", "password123", "IT", "User")
-        user_id_duplicate_email2 = self.user_handler.create_user("Richard E Grant", "nine@example.com", "password123", "IT", "User")
-        self.assertNotEqual(user_id_duplicate_email, user_id_duplicate_email2)
+        user_id_1 = self.user_handler.create_user("Rowan Atkinson", "nine@example.com", "password123", "IT", "User")
+        user_id_2 = self.user_handler.create_user("Richard E Grant", "nine@example.com", "password123", "IT", "User")
+        self.assertNotEqual(user_id_1, user_id_2)
 
     def test_authenticate_user_empty_fields(self):
         authenticated_user_empty = self.user_handler.authenticate_user("", "")
