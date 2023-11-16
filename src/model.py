@@ -1,22 +1,16 @@
 import sqlite3
 
 class DatabaseHandler:
-    def __init__(self, db_path):
-        self.db_path = db_path
-        self.conn = None
-        self.cursor = None
-        
-        self.connect()
-
-    def connect(self):
-        self.conn = sqlite3.connect(self.db_path)
+    def __init__(self, db_path, verbose = False):
+        self.conn = sqlite3.connect(db_path)
         self.cursor = self.conn.cursor()
+        self.verbose = verbose
 
-    def create_table(self, table_name, attributes, verbose = False):
+    def create_table(self, table_name, attributes):
         try:
             attributes_string =  ", ".join([f"{field} {type}" for field, type in attributes.items()])
             query = f"CREATE TABLE IF NOT EXISTS {table_name} ({attributes_string})"
-            if verbose:
+            if self.verbose:
                 print(query)
             self.cursor.execute(query)
             return None
@@ -24,11 +18,11 @@ class DatabaseHandler:
             print(f"Error creating the table: {e}")
             return e
 
-    def update_data(self, table_name, data, condition, verbose = False):
+    def update_data(self, table_name, data, condition):
         try:
             set_clause = ", ".join([f"{key} = ?" for key in data.keys()])
             query = f"UPDATE {table_name} SET {set_clause} WHERE {condition}"
-            if verbose:
+            if self.verbose:
                 print(query)
                 print(list(data.values()))
 
@@ -39,11 +33,11 @@ class DatabaseHandler:
             print(f"Error updating data: {e}")
             return e
 
-    def insert_data(self, table_name, data, verbose = False):
+    def insert_data(self, table_name, data):
         try:
             placeholders = "null, " + ", ".join(["?"] * len(data))  # Null here autogenerates the ID
             query = f"INSERT INTO {table_name} VALUES ({placeholders})"
-            if verbose:
+            if self.verbose:
                 print(query)
                 print(data)
 
@@ -56,7 +50,7 @@ class DatabaseHandler:
             print(f"Error inserting data: {e}")
             return None, e
 
-    def get_data(self, data, table_name, conditions = None, joins = None, verbose = False):
+    def get_data(self, data, table_name, conditions = None, joins = None):
         query =  f"SELECT {', '.join(data)} FROM {table_name} "
 
         if joins:
@@ -66,11 +60,11 @@ class DatabaseHandler:
         if conditions:
             query += f"WHERE {' AND '.join(conditions)} "
 
-        return self.query_data(query, verbose = verbose)
+        return self.query_data(query)
 
-    def query_data(self, query, verbose = False):
+    def query_data(self, query):
         try:
-            if verbose:
+            if self.verbose:
                 print(query)
             self.cursor.execute(query)
 
@@ -87,10 +81,10 @@ class DatabaseHandler:
             print(f"Error querying data: {e}")
             return None, e
 
-    def delete_row(self, table_name, condition, verbose = False):
+    def delete_row(self, table_name, condition):
         try:
             query = f"DELETE FROM {table_name} WHERE {condition}"
-            if verbose:
+            if self.verbose:
                 print(query)
             self.cursor.execute(query)
             self.conn.commit()
@@ -99,10 +93,10 @@ class DatabaseHandler:
             print(f"Error deleting row: {e}")
             return e
 
-    def delete_table(self, table_name, verbose = False):
+    def delete_table(self, table_name):
         try:
             query = f"DROP TABLE IF EXISTS {table_name}"
-            if verbose:
+            if self.verbose:
                 print(query)
             self.cursor.execute(query)
             self.conn.commit()
