@@ -30,29 +30,29 @@ class TestDatabaseHandler(unittest.TestCase):
         table_name = "test_table"
         attributes = {"id":"INTEGER PRIMARY KEY", "first_name":"TEXT", "last_name":"TEXT"}
         self.db_handler.create_table(table_name, attributes)
-        data = ["John", "Doe"]
+        data = ["John", "Smith"]
         self.db_handler.insert_data(table_name, data)
         result, error = self.db_handler.get_data(["first_name", "last_name"], table_name)
         self.assertIsNone(error)
-        self.assertEqual(result, [{"first_name": "John", "last_name" : "Doe"}])
+        self.assertEqual(result, [{"first_name": "John", "last_name" : "Smith"}])
 
     def test_update_data_success(self):
         table_name = "test_table"
         attributes = {"id":"INTEGER PRIMARY KEY", "first_name":"TEXT", "last_name":"TEXT"}
         self.db_handler.create_table(table_name, attributes)
-        data = ["John", "Doe"]
+        data = ["John", "Smith"]
         id, error = self.db_handler.insert_data(table_name, data)
         self.assertIsNone(error)
-        self.db_handler.update_data(table_name, {"last_name": "Smith"}, f"id = {id}")
+        self.db_handler.update_data(table_name, {"last_name": "Doe"}, f"id = {id}")
         result, error = self.db_handler.get_data(["last_name"], table_name, [f"id == {id}"])
         self.assertIsNone(error)
-        self.assertEqual(result, [{"last_name": "Smith"}])
+        self.assertEqual(result, [{"last_name": "Doe"}])
             
     def test_delete_row_success(self):
         table_name = "test_table"
         attributes = {"id":"INTEGER PRIMARY KEY", "first_name":"TEXT", "last_name":"TEXT"}
         self.db_handler.create_table(table_name, attributes)
-        data = ["John", "Doe"]
+        data = ["John", "Smith"]
         id, error = self.db_handler.insert_data(table_name, data)
         self.assertIsNone(error)
         self.db_handler.delete_row(table_name, f"id = {id}")
@@ -76,7 +76,7 @@ class TestDatabaseHandler(unittest.TestCase):
         self.assertIsInstance(error, sqlite3.Error)
 
     def test_insert_data_empty_table_name(self):
-        data = ["John", "Doe"]
+        data = ["John", "Smith"]
         result, error = self.db_handler.insert_data("", data)
         self.assertIsInstance(error, sqlite3.Error)
 
@@ -96,7 +96,7 @@ class TestDatabaseHandler(unittest.TestCase):
         table_name = "test_table"
         attributes = {"id": "INTEGER PRIMARY KEY", "first_name": "TEXT", "last_name": "TEXT"}
         self.db_handler.create_table(table_name, attributes)
-        data = ["John", "Doe"]
+        data = ["John", "Smith"]
         id, error = self.db_handler.insert_data(table_name, data)
         error = self.db_handler.update_data(table_name, {"last_name": "Smith"}, f"invalid_column = {id}")
         self.assertIsInstance(error, sqlite3.Error)
@@ -105,7 +105,7 @@ class TestDatabaseHandler(unittest.TestCase):
         table_name = "test_table"
         attributes = {"id": "INTEGER PRIMARY KEY", "first_name": "TEXT", "last_name": "TEXT"}
         self.db_handler.create_table(table_name, attributes)
-        data = ["John", "Doe"]
+        data = ["John", "Smith"]
         id, error = self.db_handler.insert_data(table_name, data)
         error = self.db_handler.delete_row(table_name, f"invalid_column = {id}")
         self.assertIsInstance(error, sqlite3.Error)
