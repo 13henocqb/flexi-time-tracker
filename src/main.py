@@ -1,3 +1,5 @@
+import PySimpleGUI
+
 from model import DatabaseHandler
 from presenter import UserHandler, TimesheetHandler
 from view import FlexiTimeGUI
